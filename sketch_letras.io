@@ -1,6 +1,7 @@
 #include <LiquidCrystal.h>
 #include <Keypad.h>
 
+
 // Configurações do display LCD
 const int lcd_rs = 12;
 const int lcd_en = 11;
@@ -35,7 +36,26 @@ enum Modalidade {
 };
 
 // Variáveis para cada modalidade
-char palavras[num_niveis][num_desafios_nivel][10];
+char palavras[num_niveis][num_desafios_nivel][10] =
+  {
+    {"casa"}, // Nível 0, Desafio 0
+    {"bola"}, // Nível 0, Desafio 1
+    {"gato"}, // Nível 0, Desafio 2
+    ...
+  },
+  {
+    {"escola"}, // Nível 1, Desafio 0
+    {"computador"}, // Nível 1, Desafio 1
+    {"banana"}, // Nível 1, Desafio 2
+    ...
+  },
+  {
+    {"alfabetização"}, // Nível 2, Desafio 0
+    {"tecnologia"}, // Nível 2, Desafio 1
+    {"informativo"}, // Nível 2, Desafio 2
+  ...
+};
+
 int operacoes[num_niveis][num_desafios_nivel][3];
 int nivel_atual[num_modalidades]; // Nível atual do jogo em cada modalidade
 int desafio_atual[num_modalidades]; // Desafio atual do nível em cada modalidade
@@ -53,7 +73,7 @@ void setup() {
   lcd.begin(16, 2);
 
   // Inicializa o keypad
-  keypad.begin();
+  keypad.begin(keys);
 
   // Gera as palavras e operações matemáticas para cada nível
   for (int i = 0; i < num_niveis; i++) {
@@ -75,5 +95,15 @@ void setup() {
 }
 
 void loop() {
+  // Mostra o menu principal
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Selecione o modo:");
+  lcd.setCursor(0, 1);
+  lcd.print("1 - Palavras");
+  lcd.print("  2 - Matemática");
+
   // Lê a tecla pressionada
-  char tecla = keypad.
+  char tecla = keypad.getKey();
+
+  // Se uma tecla foi pression
