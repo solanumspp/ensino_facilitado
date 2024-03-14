@@ -1,6 +1,6 @@
 # ENSINO_FACILITADO
 
-Desenvolvendo solução de ensino facilitado para alunos com deficiência visual ou neurodivergência utilizando micricontroladores
+Desenvolvendo solução de ensino facilitado para alunos com deficiência visual, dixlexia, irlen ou autismo, utilizando micricontroladores, teclados e alto falantes.
 
 COMPONENTES
 
