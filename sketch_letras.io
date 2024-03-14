@@ -25,33 +25,25 @@ Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, rows, cols);
 
 // Variáveis do jogo
 const int num_niveis = 3; // Número de níveis de dificuldade
-const int num_palavras_nivel = 5; // Número de palavras por nível
-char palavras[num_niveis][num_palavras_nivel][10] = {
-  {
-    {"casa"},
-    {"bola"},
-    {"gato"},
-    {"mesa"},
-    {"livro"}
-  },
-  {
-    {"escola"},
-    {"computador"},
-    {"banana"},
-    {"janela"},
-    {"arvore"}
-  },
-  {
-    {"dificil"},
-    {"programacao"},
-    {"eletronica"},
-    {"arduino"},
-    {"tecnologia"}
-  }
+const int num_desafios_nivel = 5; // Número de desafios por nível
+const int num_modalidades = 2; // Número de modalidades: palavras e matemática
+
+// Modalidades
+enum Modalidade {
+  PALAVRAS,
+  MATEMATICA
 };
-int nivel_atual = 0; // Nível atual do jogo
-int palavra_atual = 0; // Palavra atual do nível
-int erros = 0; // Número de erros
+
+// Variáveis para cada modalidade
+char palavras[num_niveis][num_desafios_nivel][10];
+int operacoes[num_niveis][num_desafios_nivel][3];
+int nivel_atual[num_modalidades]; // Nível atual do jogo em cada modalidade
+int desafio_atual[num_modalidades]; // Desafio atual do nível em cada modalidade
+int erros[num_modalidades]; // Número de erros em cada modalidade
+
+// Funções para cada modalidade
+void jogo_palavras();
+void jogo_matematica();
 
 void setup() {
   // Inicializa o serial
@@ -62,14 +54,26 @@ void setup() {
 
   // Inicializa o keypad
   keypad.begin();
+
+  // Gera as palavras e operações matemáticas para cada nível
+  for (int i = 0; i < num_niveis; i++) {
+    for (int j = 0; j < num_desafios_nivel; j++) {
+      // Gera a palavra
+      ...
+
+      // Define os operandos e o operador de acordo com o nível de dificuldade
+      ...
+    }
+  }
+
+  // Inicializa as variáveis do jogo
+  for (int i = 0; i < num_modalidades; i++) {
+    nivel_atual[i] = 0;
+    desafio_atual[i] = 0;
+    erros[i] = 0;
+  }
 }
 
 void loop() {
   // Lê a tecla pressionada
-  char tecla = keypad.getKey();
-
-  // Se uma tecla foi pressionada
-  if (tecla != NO_KEY) {
-    // Verifica se a tecla é a letra correta
-    if (tecla == palavras[nivel_atual][palavra_atual][erros]) {
-      // Se a letra estiver correta, aumenta o número de
+  char tecla = keypad.
