@@ -1,63 +1,75 @@
-// Biblioteca para controle do display de LED de sete segmentos
-#include <SevSeg.h>
+#include <LiquidCrystal.h>
+#include <Keypad.h>
 
-// Pino do botão
-#define BOTAO_PINO 2
+// Configurações do display LCD
+const int lcd_rs = 12;
+const int lcd_en = 11;
+const int lcd_d4 = 5;
+const int lcd_d5 = 4;
+const int lcd_d6 = 3;
+const int lcd_d7 = 2;
+LiquidCrystal lcd(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7);
 
-// Pinos do display de LED de sete segmentos
-#define SEGMENTO_A 3
-#define SEGMENTO_B 4
-#define SEGMENTO_C 5
-#define SEGMENTO_D 6
-#define SEGMENTO_E 7
-#define SEGMENTO_F 8
-#define SEGMENTO_G 9
-#define DIGITO_1 10
-#define DIGITO_2 11
-
-// Inicializa o objeto SevSeg para controlar o display de LED de sete segmentos
-SevSeg display;
-
-// Palavras para cada nível de dificuldade
-const char* palavras[3][3] = {
-    {"gato", "cachorro", "elefante"},
-    {"sol", "lua", "estrela"},
-    {"maçã", "banana", "laranja"}
+// Configurações do keypad
+const byte rows = 4; // Número de linhas do keypad
+const byte cols = 4; // Número de colunas do keypad
+char keys[rows][cols] = {
+  {'1', '2', '3', 'A'},
+  {'4', '5', '6', 'B'},
+  {'7', '8', '9', 'C'},
+  {'*', '0', '#', 'D'}
 };
+byte rowPins[rows] = {7, 6, 5, 4}; // Pinos das linhas do keypad
+byte colPins[cols] = {A0, A1, A2, A3}; // Pinos das colunas do keypad
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, rows, cols);
 
-// Nível de dificuldade atual
-int nivelAtual = 0;
-
-// Índice da palavra atual
-int indicePalavraAtual = 0;
+// Variáveis do jogo
+const int num_niveis = 3; // Número de níveis de dificuldade
+const int num_palavras_nivel = 5; // Número de palavras por nível
+char palavras[num_niveis][num_palavras_nivel][10] = {
+  {
+    {"casa"},
+    {"bola"},
+    {"gato"},
+    {"mesa"},
+    {"livro"}
+  },
+  {
+    {"escola"},
+    {"computador"},
+    {"banana"},
+    {"janela"},
+    {"arvore"}
+  },
+  {
+    {"dificil"},
+    {"programacao"},
+    {"eletronica"},
+    {"arduino"},
+    {"tecnologia"}
+  }
+};
+int nivel_atual = 0; // Nível atual do jogo
+int palavra_atual = 0; // Palavra atual do nível
+int erros = 0; // Número de erros
 
 void setup() {
-    // Configura o botão como entrada com pull-up interno
-    pinMode(BOTAO_PINO, INPUT_PULLUP);
+  // Inicializa o serial
+  Serial.begin(9600);
 
-    // Configura os pinos do display de LED de sete segmentos
-    byte digitos[] = {DIGITO_1, DIGITO_2};
-    byte segmentos[] = {SEGMENTO_A, SEGMENTO_B, SEGMENTO_C, SEGMENTO_D, SEGMENTO_E, SEGMENTO_F, SEGMENTO_G};
-    display.begin(COMMON_CATHODE, sizeof(digitos), digitos, segmentos);
-    display.setBrightness(90); // Define o brilho do display
+  // Inicializa o display LCD
+  lcd.begin(16, 2);
+
+  // Inicializa o keypad
+  keypad.begin();
 }
 
 void loop() {
-    // Exibe a palavra atual no display
-    display.setChars(palavras[nivelAtual][indicePalavraAtual]);
-    display.refreshDisplay();
+  // Lê a tecla pressionada
+  char tecla = keypad.getKey();
 
-    // Verifica se o botão foi pressionado
-    if (digitalRead(BOTAO_PINO) == LOW) {
-        // Avança para a próxima palavra
-        indicePalavraAtual++;
-        if (indicePalavraAtual >= 3) {
-            indicePalavraAtual = 0;
-            nivelAtual++;
-            if (nivelAtual >= 3) {
-                nivelAtual = 0;
-            }
-        }
-        delay(500); // Debounce
-    }
-}
+  // Se uma tecla foi pressionada
+  if (tecla != NO_KEY) {
+    // Verifica se a tecla é a letra correta
+    if (tecla == palavras[nivel_atual][palavra_atual][erros]) {
+      // Se a letra estiver correta, aumenta o número de
